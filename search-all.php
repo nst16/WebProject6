@@ -32,21 +32,30 @@
 		if(!$test)
 		{
 			$first_name = substr($first_name, 0, 1);
-			echo "New first name: " . $first_name;
-			$variable = $dbh->query("SELECT movies.name, movies.year FROM roles JOIN movies ON movies.id = roles.movie_id WHERE actor_id = (SELECT id FROM actors WHERE first_name = '$first_name' AND last_name = '$last_name') ORDER BY movies.year DESC");
+			$variable = $dbh->query("SELECT movies.name, movies.year FROM roles JOIN movies ON movies.id = roles.movie_id JOIN actors ON roles.actor_id = actors.id WHERE actor_id = (SELECT id FROM actors WHERE first_name LIKE '%$first_name%' AND last_name = '$last_name' LIMIT 1) ORDER BY movies.year DESC, actors.film_count DESC");
+			
+			echo "<table> <tr> <td>#</td> <td>Title</td> <td>Year</td> </tr>";
+			$count = 1;
+			while($movieTable = $variable->fetch( PDO::FETCH_ASSOC )){ 
+				echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
+     			$count++;
+     		}
 		}		
+
+		else {
+
 
 		//query again because one row was lost
 		$variable = $dbh->query("SELECT movies.name, movies.year FROM roles JOIN movies ON movies.id = roles.movie_id WHERE actor_id = (SELECT id FROM actors WHERE first_name = '$first_name' AND last_name = '$last_name') ORDER BY movies.year DESC");
 
 		//print out the table of results
-		echo "<table> <tr> <td>#</td> <td>Title</td> <td>Year</td> </tr>";
-		$count = 1;
-		while($movieTable = $variable->fetch( PDO::FETCH_ASSOC )){ 
-			echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
-     		$count++;
-     	}
-		
+			echo "<table> <tr> <td>#</td> <td>Title</td> <td>Year</td> </tr>";
+			$count = 1;
+			while($movieTable = $variable->fetch( PDO::FETCH_ASSOC )){ 
+				echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
+     			$count++;
+     		}
+		}
 		?>
 				<!-- form to search for every movie by a given actor -->
 				<form action="search-all.php" method="get">
