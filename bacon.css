@@ -35,6 +35,10 @@ body {
 	color: white;
 }
 
+#main > * {
+	padding: 1em 0em 0em 0em;
+}
+
 #banner > * {
 	padding: 1em 0em 1em 1em;
 }
@@ -45,6 +49,13 @@ form {
 	width: 24em;
 }
 
-.evenTableRow { 
+table {
+	margin-right: auto;
+	margin-left: auto;
+	border-collapse: collapse;
+	border:  1px solid gray;
+}
+
+#evenTableRow { 
 	background-color: #dad9d4;
 }

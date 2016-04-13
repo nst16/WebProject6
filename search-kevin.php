@@ -18,68 +18,72 @@
 				<?php echo "<h1>Results for " . htmlspecialchars($_GET["firstname"]) . " " . htmlspecialchars($_GET["lastname"]) .  "</h1>"; 
 				echo "<p>Films with " . htmlspecialchars($_GET["firstname"]) . " " . htmlspecialchars($_GET["lastname"]) . " and Kevin Bacon</p>";
 				?>
-			</div>
-		<?php
-		$dbh = new PDO('mysql:host=localhost; dbname=mysql', 'root', '', array(PDO::ATTR_EMULATE_PREPARES => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-		//string holds mySQL query command
-		
-		$first_name = htmlspecialchars($_GET["firstname"]);
-		$last_name = htmlspecialchars($_GET["lastname"]);
-		$variable = $dbh->query("SELECT name, year FROM movies WHERE id IN (SELECT movie_id FROM roles WHERE actor_id = (SELECT id FROM actors WHERE first_name = 'Kevin' AND last_name = 'Bacon')) 
-			AND id IN (SELECT movie_id FROM `roles` WHERE actor_id = (SELECT id FROM actors WHERE first_name = '$first_name' AND last_name = '$last_name')) ORDER BY movies.year DESC");
-		
-		//if the user is not found
-		$test = $variable->fetch(PDO::FETCH_ASSOC);
-		if(!$test)
-		{
-			$first_name = substr($first_name, 0, 1);
-			$variable = $dbh->query("SELECT movies.name, movies.year FROM roles JOIN movies ON movies.id = roles.movie_id JOIN actors ON roles.actor_id = actors.id WHERE actor_id = (SELECT id FROM actors WHERE first_name LIKE '%$first_name%' AND last_name = '$last_name' LIMIT 1) ORDER BY movies.year DESC, actors.film_count DESC");
-
-			//check if actor is not found in database
-			$test2 = $variable->fetch(PDO::FETCH_ASSOC);
-			if(!$test2)
+			<?php
+			$dbh = new PDO('mysql:host=localhost; dbname=mysql', 'root', '', array(PDO::ATTR_EMULATE_PREPARES => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+			//string holds mySQL query command
+			
+			$first_name = htmlspecialchars($_GET["firstname"]);
+			$last_name = htmlspecialchars($_GET["lastname"]);
+			$variable = $dbh->query("SELECT name, year FROM movies WHERE id IN (SELECT movie_id FROM roles WHERE actor_id = (SELECT id FROM actors WHERE first_name = 'Kevin' AND last_name = 'Bacon')) 
+				AND id IN (SELECT movie_id FROM `roles` WHERE actor_id = (SELECT id FROM actors WHERE first_name = '$first_name' AND last_name = '$last_name')) ORDER BY movies.year DESC");
+			
+			//if the user is not found
+			$test = $variable->fetch(PDO::FETCH_ASSOC);
+			if(!$test)
 			{
-				echo "Actor not found.";
+				$first_name = substr($first_name, 0, 1);
+				$variable = $dbh->query("SELECT movies.name, movies.year FROM roles JOIN movies ON movies.id = roles.movie_id JOIN actors ON roles.actor_id = actors.id WHERE actor_id = (SELECT id FROM actors WHERE first_name LIKE '%$first_name%' AND last_name = '$last_name' LIMIT 1) ORDER BY movies.year DESC, actors.film_count DESC");
+
+				//check if actor is not found in database
+				$test2 = $variable->fetch(PDO::FETCH_ASSOC);
+				if(!$test2)
+				{
+					echo "Actor not found.";
+				}
+
+				else
+				{
+					$variable = $dbh->query("SELECT name, year FROM movies WHERE id IN (SELECT movie_id FROM roles WHERE actor_id = (SELECT id FROM actors WHERE first_name = 'Kevin' AND last_name = 'Bacon')) 
+					AND id IN (SELECT movie_id FROM `roles` WHERE actor_id = (SELECT id FROM actors WHERE first_name LIKE '%$first_name%' AND last_name = '$last_name' LIMIT 1)) ORDER BY movies.year DESC");
+
+					echo "<table> <tr> <td>#</td> <td>Title</td> <td>Year</td> </tr>";
+					$count = 1;
+					while($movieTable = $variable->fetch( PDO::FETCH_ASSOC )){ 
+						echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
+	     				$count++;
+					}	
+					if($count == 1)
+					{
+						echo "Actor is not in any movies with Kevin Bacon.";	
+					}
+				}
 			}
 
 			else
 			{
-				$variable = $dbh->query("SELECT name, year FROM movies WHERE id IN (SELECT movie_id FROM roles WHERE actor_id = (SELECT id FROM actors WHERE first_name = 'Kevin' AND last_name = 'Bacon')) 
-				AND id IN (SELECT movie_id FROM `roles` WHERE actor_id = (SELECT id FROM actors WHERE first_name LIKE '%$first_name%' AND last_name = '$last_name' LIMIT 1)) ORDER BY movies.year DESC");
 
+				//query again because one row was lost
+				$variable = $dbh->query("SELECT name, year FROM movies WHERE id IN (SELECT movie_id FROM roles WHERE actor_id = (SELECT id FROM actors WHERE first_name = 'Kevin' AND last_name = 'Bacon')) 
+					AND id IN (SELECT movie_id FROM `roles` WHERE actor_id = (SELECT id FROM actors WHERE first_name = '$first_name' AND last_name = '$last_name')) ORDER BY movies.year DESC");
+
+				//print out the table of results
 				echo "<table> <tr> <td>#</td> <td>Title</td> <td>Year</td> </tr>";
 				$count = 1;
 				while($movieTable = $variable->fetch( PDO::FETCH_ASSOC )){ 
-					echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
-     				$count++;
-				}	
-				if($count == 1)
+					if($count % 2 == 0){
+						echo "<tr id='evenTableRow'> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
+					}else{
+						echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
+					}
+	     			$count++;
+	     		}
+	     		if($count == 1)
 				{
-					echo "Actor is not in any movies with Kevin Bacon.";	
+					echo "<p>Actor is not in any movies with Kevin Bacon.</p>";	
 				}
+				echo "</table>";
 			}
-		}
-
-		else
-		{
-
-			//query again because one row was lost
-			$variable = $dbh->query("SELECT name, year FROM movies WHERE id IN (SELECT movie_id FROM roles WHERE actor_id = (SELECT id FROM actors WHERE first_name = 'Kevin' AND last_name = 'Bacon')) 
-				AND id IN (SELECT movie_id FROM `roles` WHERE actor_id = (SELECT id FROM actors WHERE first_name = '$first_name' AND last_name = '$last_name')) ORDER BY movies.year DESC");
-
-			//print out the table of results
-			echo "<table> <tr> <td>#</td> <td>Title</td> <td>Year</td> </tr>";
-			$count = 1;
-			while($movieTable = $variable->fetch( PDO::FETCH_ASSOC )){ 
-				echo "<tr> <td>" . $count . "</td> <td>" . $movieTable['name'] . "</td> <td>" . $movieTable['year'] . "</td></tr>";
-     			$count++;
-     		}
-     		if($count == 1)
-			{
-				echo "Actor is not in any movies with Kevin Bacon.";	
-			}
-		}
-		?>
+			?>
 				<!-- form to search for every movie by a given actor -->
 				<form action="search-all.php" method="get">
 					<fieldset>
@@ -103,5 +107,8 @@
 				</div>
 			</fieldset>
 		</form>
+		</div>
+		<div id="banner"><br/><br/></div>
+
 	</body>
 </html>
