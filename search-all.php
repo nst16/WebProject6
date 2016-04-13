@@ -18,7 +18,7 @@
 				<?php echo "<h1>Results for " . htmlspecialchars($_GET["firstname"]) . " " . htmlspecialchars($_GET["lastname"]) .  "</h1>";
 				echo "<p>Films with " . htmlspecialchars($_GET["firstname"]) . " " . htmlspecialchars($_GET["lastname"]) . "</p>";
 				 ?>
-			</div>
+			<div id = "table">
 		<?php
 		$dbh = new PDO('mysql:host=localhost; dbname=mysql', 'root', '', array(PDO::ATTR_EMULATE_PREPARES => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 		//string holds mySQL query command
@@ -68,6 +68,8 @@
      		}
 		}
 		?>
+	</div>
+</div>
 				<!-- form to search for every movie by a given actor -->
 				<form action="search-all.php" method="get">
 					<fieldset>
