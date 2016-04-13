@@ -4,7 +4,6 @@
 		<title>My Movie Database (MyMDb)</title>
 		<meta charset="utf-8" />
 		<!-- Link to your CSS file that you should edit -->
-		<!-- BLAH COMMENT CAuSE GITHub sucKKSSSSSS -->
 		<link href="bacon.css" type="text/css" rel="stylesheet" />
 	</head>
 
@@ -14,7 +13,6 @@
 				<a href="index.php"><img src="mymdb.png" alt="banner logo" /></a>
 				My Movie Database
 			</div>
-
 			<div id="main">
 				<h1>The One Degree of Kevin Bacon</h1>
 				<p>Type in an actor's name to see if he/she was ever in a movie with Kevin Bacon!</p>
@@ -44,7 +42,7 @@
 					</fieldset>
 				</form>
 			</div> <!-- end of #main div -->
-		
+			<div id="banner"><br/><br/></div>
 		</div> <!-- end of #frame div -->
 	</body>
 </html>

@@ -3,27 +3,48 @@
 	font-family: Verdana, sans-serif;
 }
 
+h1 {
+	text-align: center;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+
+p {
+	text-align: center;
+}
+
 body {
 	background-color: #dad9d4;
 }
 
 #main {
-	margin: auto;
+	margin-right: auto;
+	margin-left: auto;
+	margin-bottom: 0px;
+	padding: 1em 0em 1em 0em;
 	width: 90%;
 	background-color: white;
 }
 
 #banner {
+	margin-right: auto;
+	margin-left: auto;
+	padding: 1em 0em 1em 0em;
+	width: 90%;
 	background-image: url('banner-background.png');
 	color: white;
 }
 
+#banner > * {
+	padding: 1em 0em 1em 1em;
+}
+
 form {
+	margin-right: auto;
+	margin-left: auto;
 	width: 24em;
 }
 
 .evenTableRow { 
 	background-color: #dad9d4;
 }
-
-
